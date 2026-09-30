@@ -29,3 +29,27 @@ function openApp(appId) {
     // توجيه إطار الـ iframe لمسار التطبيق المطلوبة
     viewport.src = `/Apps/System-Apps/${appId}/index.html`;
 }
+
+// دالة جلب وتحديث الطقس
+async function updateWeather() {
+    try {
+        // يمكنك ربطه بـ API حقيقي مستقبلاً أو بجسر النظام
+        // مثال لطلب API طقس مبسط:
+        /*
+        const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=24.71&longitude=46.67&current_weather=true');
+        const data = await response.json();
+        const temp = Math.round(data.current_weather.temperature);
+        document.querySelector('.weather-widget').innerText = `⛅ ${temp}°C`;
+        */
+
+        // محاكاة للتحديث الحالم للطقس
+        console.log("تم تحديث بيانات الطقس في DixiOS");
+    } catch (error) {
+        console.error("تعذر جلب بيانات الطقس:", error);
+    }
+}
+
+// تحديث الطقس أول ما يشتغل اللانشر، ثم كل 30 دقيقة (1,800,000 ملي ثانية)
+updateWeather();
+setInterval(updateWeather, 1800000);
+
