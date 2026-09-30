@@ -5,16 +5,26 @@
 
 const DixiOSBridge = {
     // إرسال أمر تنفيذي إلى خلفية النظام (Java Bridge)
-    sendCommand: function(action, payload = {}) {
+    sendCommand: async function(action, payload = {}) {
         const requestData = JSON.stringify({ action, payload });
         console.log(`[DixiOS Bridge Out]: ${requestData}`);
 
-        // إذا كان واصل ببيئة Java الحقيقية للنظام
+        // 1. إذا كان الواصل عبر Javascript Interface المباشر في الـ WebView
         if (window.DixiJavaBridge && typeof window.DixiJavaBridge.postMessage === 'function') {
             window.DixiJavaBridge.postMessage(requestData);
         } else {
-            // نمط التجرية على المتصفح العادي (Fallback)
-            console.warn(`[DixiOS Simulation]: تم إرسال الأمر (${action}) بنجاح للمحاكاة.`);
+            // 2. إذا كان يعمل عبر سيرفر الـ HTTP المحلية (DixiBridge.java - Port 8080)
+            try {
+                const response = await fetch('http://localhost:8080/api/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: action
+                });
+                const result = await response.text();
+                console.log(`[DixiOS Bridge HTTP Response]: ${result}`);
+            } catch (error) {
+                console.warn(`[DixiOS Simulation]: تعذر الاتصال بـ HTTP Bridge، تشغيل نمط المحاكاة للأمر (${action}).`);
+            }
         }
     },
 
@@ -33,6 +43,11 @@ const DixiOSBridge = {
         this.sendCommand('REBOOT');
     },
 
+    // التحديث الحي
+    liveUpdate: function() {
+        this.sendCommand('LIVE_UPDATE');
+    },
+
     // فتح الإعدادات
     openSettings: function() {
         this.sendCommand('OPEN_SETTINGS');
@@ -48,6 +63,9 @@ function systemCommand(action) {
         case 'reboot':
             DixiOSBridge.reboot();
             break;
+        case 'live-update':
+            DixiOSBridge.liveUpdate();
+            break;
         case 'settings':
             DixiOSBridge.openSettings();
             break;
@@ -56,3 +74,4 @@ function systemCommand(action) {
             break;
     }
 }
+    
