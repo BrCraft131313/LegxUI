@@ -5,5 +5,7 @@
 ## Description 
 This is My HTML CSS JS UI And I Use This UI In DixiOS
 This Is A Open Source Version
+## Suggestions 
+[Suggestions](https://github.com/BrCraft131313/LegxUI/discussions/2)
 ## DixiOS 
 [![](https://raw.githubusercontent.com/BrCraft131313/LegxUI/main/DixiOS.png)](https://github.com/BrCraft131313/DixiOS/)
